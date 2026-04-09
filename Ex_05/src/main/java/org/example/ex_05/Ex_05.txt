@@ -1,0 +1,43 @@
+1. Sơ đồ kiến trúc 3 tầng (Data Flow)
+Client (Browser/Postman)
+        ↓
+   HTTP Request
+        ↓
+Controller Layer (@RestController)
+- Nhận request (GET, POST, DELETE)
+- Lấy dữ liệu từ URL (@PathVariable, @RequestParam)
+        ↓
+Service Layer (@Service)
+- Xử lý nghiệp vụ (business logic)
+- Kiểm tra dữ liệu
+        ↓
+Repository Layer (@Repository)
+- Thao tác dữ liệu (lưu, tìm, xóa)
+        ↓
+Service → Controller
+        ↓
+HTTP Response trả về Client
+
+
+Kiến trúc 3 tầng giúp tách biệt rõ ràng giữa xử lý request, nghiệp vụ và dữ liệu, giúp hệ thống dễ bảo trì và mở rộng.
+
+2. Báo cáo "Bẫy dữ liệu ép kiểu"
+
+Trong route xem đơn hàng sử dụng @PathVariable Long id, hệ thống yêu cầu ID phải là số.
+Nếu người dùng nhập sai kiểu dữ liệu (ví dụ: /orders/abc), Spring sẽ không thể ép kiểu từ String sang Long và ném ra lỗi MethodArgumentTypeMismatchException.
+Nếu không xử lý, lỗi này sẽ khiến hệ thống trả về trang lỗi (HTTP 400).
+Để đảm bảo trải nghiệm người dùng, ta sử dụng @ExceptionHandler để bắt lỗi và trả về thông báo thân thiện như: "ID đơn hàng phải là một số".
+
+3. Báo cáo về tính Idempotent
+
+Tính Idempotent là khi một request được thực hiện nhiều lần nhưng kết quả vẫn không thay đổi.
+
+Đối với DELETE (hủy đơn hàng):
+Khi xóa một đơn hàng, dù người dùng bấm nhiều lần (do mạng lag), kết quả cuối cùng vẫn là đơn hàng bị xóa. Các lần gọi sau không làm thay đổi trạng thái thêm nữa → an toàn.
+Đối với POST (tạo đơn hàng):
+Mỗi lần gọi API sẽ tạo ra một đơn hàng mới. Nếu người dùng bấm nhiều lần, hệ thống sẽ tạo ra nhiều đơn hàng trùng lặp → gây rủi ro dữ liệu rác.
+
+Vì vậy:
+
+DELETE là idempotent (an toàn khi gọi nhiều lần)
+POST là non-idempotent (có thể gây lỗi dữ liệu nếu gọi nhiều lần)

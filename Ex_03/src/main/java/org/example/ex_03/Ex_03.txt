@@ -1,0 +1,4 @@
+Trong Cách A (/bai3/orders/5), số 5 nằm trong URI Path (đường dẫn), thể hiện trực tiếp tài nguyên cụ thể.
+Trong Cách B (/bai3/orders?id=5), số 5 nằm trong Query String (chuỗi truy vấn), thường dùng để lọc hoặc tìm kiếm.
+Theo RESTful, khi cần truy cập một tài nguyên cụ thể (ví dụ: đơn hàng theo ID), nên sử dụng @PathVariable.
+Vì vậy, em chọn Cách A vì rõ ràng, dễ hiểu và đúng chuẩn thiết kế REST API.
